@@ -1,0 +1,35 @@
+<h1>Todoアプリ</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    <input type="text" name="title">
+
+    <button type="submit">追加</button>
+</form>
+
+<h2>Todo一覧</h2>
+
+<ul>
+    {% for todo in todos %}
+        <li>
+            {% if todo.completed %}
+                <s>{{ todo.title }}</s>
+                <span>完了</span>
+            {% else %}
+                {{ todo.title }}
+                <span>未完了</span>
+            {% endif %}
+
+            <form method="post" action="{% url 'toggle_todo' todo.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">切り替え</button>
+            </form>
+
+            <form method="post" action="{% url 'delete_todo' todo.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">削除</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
