@@ -1,35 +1,111 @@
-<h1>Todoアプリtest</h1>
+{% extends 'hello/base.html' %}
 
-<form method="post">
+{% block title %}Todoアプリ{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Todoアプリ</h1>
+
+<form method="post" class="d-flex mb-4">
     {% csrf_token %}
 
-    <input type="text" name="title">
+    <input type="text"
+           name="title"
+           class="form-control me-2"
+           placeholder="タスクを入力">
 
-    <button type="submit">追加</button>
+    <button type="submit" class="btn btn-primary">
+        追加
+    </button>
 </form>
 
-<h2>Todo一覧</h2>
+<form method="get" class="d-flex mb-4">
+    <input type="text"
+           name="search"
+           class="form-control me-2"
+           placeholder="Todoを検索"
+           value="{{ search|default:'' }}">
 
-<ul>
+    <button type="submit" class="btn btn-outline-secondary">
+        検索
+    </button>
+
+    <a href="{% url 'hello' %}" class="btn btn-outline-dark ms-2">
+        リセット
+    </a>
+</form>
+
+<h2 class="mb-3">Todo一覧</h2>
+
+<ul class="list-group">
+
     {% for todo in todos %}
-        <li>
-            {% if todo.completed %}
-                <s>{{ todo.title }}</s>
-                <span>完了</span>
-            {% else %}
-                {{ todo.title }}
-                <span>未完了</span>
-            {% endif %}
 
-            <form method="post" action="{% url 'toggle_todo' todo.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">切り替え</button>
-            </form>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
 
-            <form method="post" action="{% url 'delete_todo' todo.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">削除</button>
-            </form>
+            <div>
+                {% if todo.completed %}
+                    <span class="text-muted text-decoration-line-through">
+                        {{ todo.title }}
+                    </span>
+
+                    <span class="badge bg-success">
+                        完了
+                    </span>
+                {% else %}
+                    <span>{{ todo.title }}</span>
+
+                    <span class="badge bg-secondary">
+                        未完了
+                    </span>
+                {% endif %}
+
+                <br>
+
+                <small class="text-muted">
+                    作成日時: {{ todo.created_at|date:"Y年m月d日 H:i" }}
+                </small>
+            </div>
+
+            <div>
+                <a href="{% url 'edit_todo' todo.id %}"
+                   class="btn btn-sm btn-outline-primary">
+                    編集
+                </a>
+
+                <form method="post"
+                      action="{% url 'toggle_todo' todo.id %}"
+                      class="d-inline">
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-success">
+                        切り替え
+                    </button>
+                </form>
+
+                <form method="post"
+                      action="{% url 'delete_todo' todo.id %}"
+                      class="d-inline">
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger">
+                        削除
+                    </button>
+                </form>
+            </div>
+
         </li>
+
+    {% empty %}
+
+        <li class="list-group-item">
+            該当するTodoはありません。
+        </li>
+
     {% endfor %}
+
 </ul>
+
+{% endblock %}

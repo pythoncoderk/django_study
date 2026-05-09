@@ -1,11 +1,18 @@
-<h1>名前を編集</h1>
+{% extends 'hello/base.html' %}
+
+{% block title %}Todo編集{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Todo編集</h1>
 
 <form method="post">
     {% csrf_token %}
 
-    <input type="text" name="username" value="{{ person.name }}">
+    <input type="text" name="title" class="form-control mb-3" value="{{ todo.title }}">
 
-    <button type="submit">更新</button>
+    <button type="submit" class="btn btn-primary">更新</button>
+    <a href="{% url 'hello' %}" class="btn btn-secondary">戻る</a>
 </form>
 
-<a href="{% url 'hello' %}">一覧へ戻る</a>
+{% endblock %}
